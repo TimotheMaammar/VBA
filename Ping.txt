@@ -1,0 +1,51 @@
+'Ping de toutes les adresses IP contenues dans la première colonne
+'Penser à activer le mode développeur et à ajouter un bouton de lancement
+'Faire Echap pour arrêter
+'Colonne 1 = Liste des machines
+'Colonne 2 = Résultats des pings
+'Colonne 3 = Date et heure du dernier ping réussi
+
+Sub Ping()
+
+'Boucle infinie
+Do While 1 < 2
+
+Application.ScreenUpdating = True
+
+Dim machine As String
+
+For ligne = 2 To ActiveSheet.Cells(65536, 1).End(xlUp).Row
+
+Dim objet_shell, resultat
+Set objet_shell = CreateObject("wscript.shell")
+
+machine = ActiveSheet.Cells(ligne, 1).Value
+
+resultat = objet_shell.Run("ping -n 1 -w 1000 " & machine, 0, True)
+
+ActiveSheet.Cells(ligne, 2).ClearContents
+
+If resultat = 0 Then
+
+ActiveSheet.Cells(ligne, 2).Value = "OK"
+ActiveSheet.Cells(ligne, 2).Font.Color = RGB(0, 0, 0)
+ActiveSheet.Cells(ligne, 2).Interior.Color = RGB(0, 255, 0)
+ActiveSheet.Cells(ligne, 3).Value = Now
+
+Else
+
+ActiveSheet.Cells(ligne, 2).Value = "NOK"
+ActiveSheet.Cells(ligne, 2).Font.Color = RGB(0, 0, 0)
+ActiveSheet.Cells(ligne, 2).Interior.Color = RGB(255, 0, 0)
+
+End If
+
+Next
+
+'Pause d'une minute pour ne pas surcharger le réseau
+Application.Wait (Now + TimeValue("0:01:00"))
+
+Loop
+
+End Sub
+
